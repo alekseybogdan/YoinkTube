@@ -1,7 +1,7 @@
 # YoinkTube
 ![alt text](https://github.com/aliakseibohdan/YoinkTube/blob/main/YoinkTube/images/logo.png)
 
-Free, unlimited YouTube downloader and converter. 
+YoinkTube is free, unlimited, no-ads YouTube downloader and converter with a graphical user interface.
 
 - Convert YouTube links to MP3 and MP4
 - Select video quality for downloading
