@@ -100,7 +100,7 @@ class App(ctk.CTk):
         if is_only_audio:
             d_video = yt.streams.filter(only_audio=is_only_audio).first()
         else:
-            d_video = yt.streams.filter(res=quality).first()
+            d_video = yt.streams.filter(res=quality, progressive=True).first()
 
         try:
             os.mkdir(SAVE_PATH)
@@ -118,15 +118,22 @@ class App(ctk.CTk):
                 self.show_frame("StartPage")
                 messagebox.showinfo("", "Audio downloaded successfully!")
             else:
-                d_video.download(output_path=SAVE_PATH)
-                self.show_frame("StartPage")
-                messagebox.showinfo("", "Video downloaded successfully!")
+                try:
+                    d_video.download(output_path=SAVE_PATH)
+                    self.show_frame("StartPage")
+                    messagebox.showinfo("", "Video downloaded successfully!")
+                except:
+                    d_video = yt.streams.get_highest_resolution()
+                    messagebox.showinfo("", f"The source does not exist in the specified quality.\nThe video will be downloaded in the highest available resolution ({d_video.resolution})")
+                    d_video.download(output_path=SAVE_PATH)
+                    self.show_frame("StartPage")
+                    messagebox.showinfo("", "Video downloaded successfully!")
 
             self.open_destination_folder()
         except: 
             print("Unknown Error!")
             self.show_frame("StartPage")
-            messagebox.showerror("", "Some Error!")
+            messagebox.showerror("", "An unknown error has occurred.")
 
 
 class StartPage(ctk.CTkFrame):
@@ -222,12 +229,12 @@ class PageOne(ctk.CTkFrame):
         label_quality = ctk.CTkLabel(middle, text="Quality")
         label_quality.pack(side="left", pady=10)
         
-        combobox_var = ctk.StringVar(value="720p")
+        combobox_var = ctk.StringVar(value="1080p")
 
         def combobox_callback(choice):
             print("combobox dropdown clicked:", choice)
 
-        combobox_quality = ctk.CTkComboBox(middle, state="readonly", values=["144p", "240p", "360p", "480p", "720p"], command=combobox_callback, variable=combobox_var)
+        combobox_quality = ctk.CTkComboBox(middle, state="readonly", values=["144p", "240p", "360p", "480p", "720p", "1080p"], command=combobox_callback, variable=combobox_var)
         combobox_quality.pack(side="left", padx=10)
 
         button_back = ctk.CTkButton(bottom, text="Go to the start page",
